@@ -1,25 +1,25 @@
 ########################
-# 무선트래픽예측 제외 대상
+# wireless-traffic-prediction 제외 대상
 ########################
-무선트래픽_예측/2_저장된모델/
-무선트래픽_예측/3_모델설명서/
-무선트래픽_예측/1_작성코드/4_모델비교.ipynb
-무선트래픽_예측/1_작성코드/5_기지국그룹별_학습.ipynb
-무선트래픽_예측/Q1_data/
-무선트래픽_예측/Q1_submitResult/
+wireless-traffic-prediction/2_저장된모델/
+wireless-traffic-prediction/3_모델설명서/
+wireless-traffic-prediction/1_작성코드/4_모델비교.ipynb
+wireless-traffic-prediction/1_작성코드/5_기지국그룹별_학습.ipynb
+wireless-traffic-prediction/Q1_data/
+wireless-traffic-prediction/Q1_submitResult/
 
 ########################
-# 장애경보_분류 제외 대상
+# fault-alarm-classification 제외 대상
 ########################
-장애경보_분류/model/
-장애경보_분류/data/
-장애경보_분류/모델 설명서/
+fault-alarm-classification/model/
+fault-alarm-classification/data/
+fault-alarm-classification/모델 설명서/
 
 ########################
-# .alarm_rag_agent 제외 대상
+# alarm-rag-agent 제외 대상
 ########################
 alarm-rag-agent/data/
-장애경보_분류/data/
+fault-alarm-classification/data/
 
 ########################
 # 공통 제외 (이중 안전)
