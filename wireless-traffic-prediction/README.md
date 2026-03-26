@@ -35,18 +35,24 @@
 ## 2. EDA
 - 데이터: Train 137,445행 x 39열 / Test 34,362행 x 38열 (5분 단위, 60일)
   <img width="595" height="389" alt="{F6A893D9-025B-486D-BB2F-B74F55E5D370}" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
-
 - 축제 기간 기지국 A에서 uenomax 스파이크 발견 (최대 74)
+
+  <img width="2079" height="772" alt="fig1_paging_area" src="https://github.com/user-attachments/assets/cb265f53-2f71-407d-9536-afd3b0ff112a" />
+
 - attpaging 값 비교로 Test 기지국과 유사 커버리지 기지국 매칭
   - Test(B) → A, C, D와 같은 커버리지 구역
   - Test(J) → I와 같은 커버리지 구역
+ 
+  <img width="1380" height="979" alt="festival_oldstyle" src="https://github.com/user-attachments/assets/fa316896-bd1c-428c-8eba-68ce066d032f" />
+
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 48% 감소
 
-<!-- ![EDA](./images/파일명.png) -->
 
 ## 3. 피처 엔지니어링
 
 - **Lag 변수 생성**: 직전 시점 자기상관 0.70~0.96 → 주요 6개 변수 Lag-1 생성
+
+  <img width="1380" height="980" alt="time_category_chart" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
 - **시간대 변수**: 시간대별 uenomax 평균 차이 뚜렷 (2.38~4.75) → 시간대 변수 추가
 - **다중공선성 완화**: 성공/시도 피처 간 상관계수 0.99 이상 → 시도 피처만 선택 (succ 제거)
 - 최종: 36개 원본에서 8개 제거 + 8개 파생변수 추가 → **36개 피처**로 학습
