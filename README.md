@@ -1,46 +1,50 @@
-# 해커톤 프로젝트
-통신망 안정성 확보를 위한 인공지능 해커톤 — **최우수상 수상**  
-리더보드:
-- 분야1 | 무선 기지국 인구 밀집도 예측: 59팀 중 **6위**
-- 분야2 | 유선 네트워크 경보 유형 분류: 59팀 중 **3위**
+# 통신망 안정화 AI 해커톤 프로젝트
 
+통신망 안정성 확보를 위한 인공지능 해커톤 — **최우수상 수상** (전체 59팀 참가)
 
-## 소개
-- 무선 기지국과 유선 네트워크 데이터를 활용해 인구 밀집도 예측과 경보 유형 분류를 수행하는 AI 프로젝트
-- https://aifactory.space/task/2513/overview
+| 분야 | 과제 | 순위 |
+|------|------|------|
+| 분야1 | 무선 기지국 인구 밀집도 예측 | 59팀 중 **6위** |
+| 분야2 | 유선 네트워크 경보 유형 분류 | 59팀 중 **3위** |
 
-## 프로젝트 개요
-- **목표**: 통신 네트워크 데이터를 활용하여 축제 지역 인구 수 예측 및 경보 유형 자동 분류
-- **핵심 아이디어**: 시계열 분석과 NLP 기반 경보 분류를 통해 네트워크 안정성 향상 지원
+🔗 [대회 페이지](https://aifactory.space/task/2513/overview)
 
-## 분야별 설명
-### 분야1 | 무선 기지국 인구 밀집도 예측
-- **문제**: 축제 지역 10곳 기지국 통계 데이터를 기반으로 인구 수 예측 (회귀 문제)
-- **데이터**: RU(Radio Unit) 통계 — 업/다운링크 데이터, BLER, RSSI, 단말 수 등 5분 단위 제공
+---
+
+## 프로젝트 구성
+
+### 📡 [wireless-traffic-prediction](./wireless-traffic-prediction)
+무선 기지국 RU 통계 데이터를 기반으로 축제 지역 인구 수를 예측하는 회귀 모델
+
+- **데이터**: 업/다운링크, BLER, RSSI, 단말 수 등 5분 단위 RU 통계
 - **모델**: LightGBM, XGBoost
-- **핵심 포인트**: 유의미한 컬럼 선택, 시계열 주기성 고려
-- **평가 지표**: MAE (평균 절대 오차)
+- **핵심**: 유의미한 피처 선택, 시계열 주기성 반영
+- **평가**: MAE (평균 절대 오차)
 
-### 분야2 | 유선 네트워크 경보 유형 분류
-- **문제**: 전표별 경보 메시지를 링크/유니트/전원 장애 중 하나로 분류 (분류 문제)
-- **데이터**: 전표별 경보 목록, 발생 시각/위치, 장애 유형 레이블
-- **모델**: 
-  - FastText → 단어 임베딩/분류 특징 추출
-  - LightGBM → FastText 특징 기반 최종 분류
-  - Transformer + Meta FastText → 시퀀스 전체 학습/추론
-- **핵심 포인트**: 메시지 키워드 의미와 조합 이해, 경보 발생 순서 고려
-- **평가 지표**: 정확도 (Accuracy)
+### 🚨 [fault-alarm-classification](./fault-alarm-classification)
+전표별 통신 경보 메시지를 링크/유니트/전원 장애로 분류하는 NLP 모델
 
-## 프로젝트 구조 및 실행 순서
-### 분야1 | 무선 기지국 인구 밀집도 예측
-- 1_EDA.ipynb → 데이터 탐색
-- 2_학습용.ipynb → 모델 학습
-- 3_추론용.ipynb → 결과 추론
+- **데이터**: 경보 메시지, 발생 시각/위치, 장애 유형 레이블
+- **모델**: FastText + LightGBM, Transformer 앙상블
+- **핵심**: 제조사별 경보 표현 차이 처리 (수동 딕셔너리 86개 규칙), 경보 발생 순서 고려
+- **평가**: Accuracy
 
-### 분야2 | 유선 네트워크 경보 유형 분류
-- EDA.ipynb → 데이터 탐색
-- fasttext_model.ipynb → FastText 기반 특징 추출
-- lightgbm_FastText_model.ipynb → LightGBM 최종 분류
-- transformer_model.ipynb → Transformer  학습
-- soft_voting_with_model_3.ipynb → 앙상블 모델
+### 🤖 [alarm-rag-agent](./alarm-rag-agent)
+해커톤 분야2의 한계(수동 규칙 의존)를 **LLM + RAG**로 개선한 후속 프로젝트
 
+- 기존 방식의 수동 딕셔너리 86개 규칙 → 규칙 없이 자동 분류
+- **모델**: LLaMA 3.1 8B (Groq) + FAISS 벡터DB + LangGraph ReAct Agent
+- **성능**: FAISS 단독 0.948 / RAG Agent 0.867 (단건 경보 기준)
+- 새 제조사 추가 시 재학습 없이 자동 대응
+
+---
+
+## 기술 스택
+
+| 영역 | 사용 기술 |
+|------|----------|
+| ML 모델 | LightGBM, XGBoost, FastText, Transformer |
+| LLM / RAG | LLaMA 3.1 8B, LangChain, LangGraph, FAISS |
+| 임베딩 | sentence-transformers/all-mpnet-base-v2 |
+| UI | Streamlit |
+| 언어 | Python |
