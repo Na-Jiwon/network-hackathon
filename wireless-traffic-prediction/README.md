@@ -32,9 +32,10 @@
 
 <!-- ![문제 정의](./images/파일명.png) -->
 
-## 2. 데이터 탐색 및 기지국 선별
-
+## 2. EDA
 - 데이터: Train 137,445행 x 39열 / Test 34,362행 x 38열 (5분 단위, 60일)
+  <img width="595" height="389" alt="{F6A893D9-025B-486D-BB2F-B74F55E5D370}" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
+
 - 축제 기간 기지국 A에서 uenomax 스파이크 발견 (최대 74)
 - attpaging 값 비교로 Test 기지국과 유사 커버리지 기지국 매칭
   - Test(B) → A, C, D와 같은 커버리지 구역
