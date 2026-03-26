@@ -17,8 +17,6 @@
 | 문제 유형 | 시계열 회귀 |
 | 평가 지표 | MAE (Mean Absolute Error) |
 
-![프로젝트 개요](./images/슬라이드2.PNG)
-
 ---
 
 ## 문제 정의
@@ -26,8 +24,6 @@
 축제 지역 10곳 기지국(RU)의 통신 통계 데이터를 기반으로 **기지국 범위 내 인구 수(uenomax)를 예측**하는 문제.
 
 핵심 난이도는 **학습 기지국(8개)과 테스트 기지국(2개)이 물리적으로 다른 위치**라는 점이었고, Paging Area 기반으로 유사 커버리지 기지국을 선별하여 해결했음.
-
-![데이터 탐색 및 기지국 선별](./images/슬라이드3.PNG)
 
 ---
 
@@ -77,10 +73,6 @@
 | redirectiontolte_coverageout | 5G→LTE 전환 (커버리지 이탈) |
 | redirectiontolte_epsfallback | 5G→LTE 전환 (EPS Fallback) |
 | redirectiontolte_emergencyfallback | 5G→LTE 전환 (긴급 Fallback) |
-
-![피처 엔지니어링](./images/슬라이드4.PNG)
-
-![모델링 및 성과](./images/슬라이드5.PNG)
 
 ### 약어 정리
 
