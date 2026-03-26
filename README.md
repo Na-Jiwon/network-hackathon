@@ -25,7 +25,7 @@
 전표별 통신 경보 메시지를 링크/유니트/전원 장애로 분류하는 NLP 모델
 
 - **데이터**: 경보 메시지, 발생 시각/위치, 장애 유형 레이블
-- **모델**: FastText + LightGBM, Transformer 앙상블
+- **모델**: fastText, FastText + LightGBM, Transformer 3개 모델 앙상블
 - **핵심**: 제조사별 경보 표현 차이 처리 (수동 딕셔너리 86개 규칙), 경보 발생 순서 고려
 - **평가**: Accuracy
 
