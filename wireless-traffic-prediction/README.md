@@ -56,15 +56,16 @@
 
 # 3. 피처 엔지니어링
 
+<img width="800" alt="다중공선성 완화" src="https://github.com/user-attachments/assets/10a85ca4-4a27-41eb-8791-d6a52579eea0" />
+
 - **Lag 변수 생성**: 직전 시점 자기상관이 0.70~0.96으로 높다. → 주요 6개 변수에 Lag-1을 생성했다.
   - Lag 생성 시 첫 행 결측 → 동일 시간대·기지국 평균으로 보간했다.
   - Lag-2, Lag-12 대비 Lag-1 단독이 가장 낮은 MAE를 기록했다.
- 
-<img width="800" alt="다중공선성 완화" src="https://github.com/user-attachments/assets/10a85ca4-4a27-41eb-8791-d6a52579eea0" />
-- **시간대 변수**: 시간대별 uenomax 평균 차이가 뚜렷하다. (2.38~4.75) → 시간대 변수를 추가했다.
-
 
 <img width="800" alt="Lag 변수 및 시간대 변수" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
+
+- **시간대 변수**: 시간대별 uenomax 평균 차이가 뚜렷하다. (2.38~4.75) → 시간대 변수를 추가했다.
+
 - **다중공선성 완화**: 성공과 시도 피처 간 상관계수가 0.99 이상이다. → 시도 피처만 선택했다. (succ 제거)
   - VIF가 큰 피처를 제거해서 다중공선성을 완화했다.
 - 최종: 36개 원본에서 8개 제거 + 8개 파생변수 추가 → **36개 피처**로 학습했다.
