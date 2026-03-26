@@ -1,46 +1,89 @@
-# 해커톤 프로젝트
-통신망 안정성 확보를 위한 인공지능 해커톤 — **최우수상 수상**  
-리더보드:
-- 분야1 | 무선 기지국 인구 밀집도 예측: 59팀 중 **6위**
-- 분야2 | 유선 네트워크 경보 유형 분류: 59팀 중 **3위**
+# 장애 경보 분류 (Fault Alarm Classification)
 
+통신 장비 경보 메시지를 기반으로 장애 유형을 자동 분류하는 NLP 모델
 
-## 소개
-- 무선 기지국과 유선 네트워크 데이터를 활용해 인구 밀집도 예측과 경보 유형 분류를 수행하는 AI 프로젝트
-- https://aifactory.space/task/2513/overview
+**Accuracy 0.9448** — 59팀 중 3위
+
+---
 
 ## 프로젝트 개요
-- **목표**: 통신 네트워크 데이터를 활용하여 축제 지역 인구 수 예측 및 경보 유형 자동 분류
-- **핵심 아이디어**: 시계열 분석과 NLP 기반 경보 분류를 통해 네트워크 안정성 향상 지원
 
-## 분야별 설명
-### 분야1 | 무선 기지국 인구 밀집도 예측
-- **문제**: 축제 지역 10곳 기지국 통계 데이터를 기반으로 인구 수 예측 (회귀 문제)
-- **데이터**: RU(Radio Unit) 통계 — 업/다운링크 데이터, BLER, RSSI, 단말 수 등 5분 단위 제공
-- **모델**: LightGBM, XGBoost
-- **핵심 포인트**: 유의미한 컬럼 선택, 시계열 주기성 고려
-- **평가 지표**: MAE (평균 절대 오차)
+| 항목 | 내용 |
+|------|------|
+| 기간 | 2023.07 ~ 09 (3개월) |
+| 인원 | 4인 팀 |
+| 역할 | EDA 수행, 문제 정의 및 텍스트 정규화 방향 논의 |
+| 대회 | ETRI·KT 통신망 안정화 AI 해커톤 |
+| 문제 유형 | 텍스트 분류 (NLP) |
+| 평가 지표 | Accuracy (ticketno 단위) |
 
-### 분야2 | 유선 네트워크 경보 유형 분류
-- **문제**: 전표별 경보 메시지를 링크/유니트/전원 장애 중 하나로 분류 (분류 문제)
-- **데이터**: 전표별 경보 목록, 발생 시각/위치, 장애 유형 레이블
-- **모델**: 
-  - FastText → 단어 임베딩/분류 특징 추출
-  - LightGBM → FastText 특징 기반 최종 분류
-  - Transformer + Meta FastText → 시퀀스 전체 학습/추론
-- **핵심 포인트**: 메시지 키워드 의미와 조합 이해, 경보 발생 순서 고려
-- **평가 지표**: 정확도 (Accuracy)
+![데이터 탐색 및 핵심 문제 정의](./images/슬라이드6.PNG)
 
-## 프로젝트 구조 및 실행 순서
-### 분야1 | 무선 기지국 인구 밀집도 예측
-- 1_EDA.ipynb → 데이터 탐색
-- 2_학습용.ipynb → 모델 학습
-- 3_추론용.ipynb → 결과 추론
+---
 
-### 분야2 | 유선 네트워크 경보 유형 분류
-- EDA.ipynb → 데이터 탐색
-- fasttext_model.ipynb → FastText 기반 특징 추출
-- lightgbm_FastText_model.ipynb → LightGBM 최종 분류
-- transformer_model.ipynb → Transformer  학습
-- soft_voting_with_model_3.ipynb → 앙상블 모델
+## 문제 정의
 
+전표(ticketno)별 경보 메시지를 **LinkCut / PowerFail / UnitFail** 3가지 장애 유형으로 분류하는 문제.
+
+핵심 난이도는 **Train에는 제조사 A만 존재하지만, Test에는 A/B/C 3개 제조사가 존재하여 93%가 미학습 제조사**라는 점. 같은 장애를 제조사마다 다르게 표현하기 때문에 이를 통합하는 정규화 전략이 필수였음.
+
+### 제조사별 경보 표현 차이
+
+| 제조사 A | 제조사 B | 제조사 C | 장애 유형 |
+|---------|---------|---------|---------|
+| PSU-FAIL | BATTERY_FAIL | Input Power Degrade Defect | PowerFail |
+| ETH-ERR | ETHER_LINK_DOWN(LOS) | Loss Of Signal | LinkCut |
+| OPT-LOS | LOSS_OF_SIGNAL | Loss Of Signal | LinkCut |
+
+![텍스트 정규화 및 시퀀스 설계](./images/슬라이드7.PNG)
+
+![모델링 및 성과](./images/슬라이드8.PNG)
+
+---
+
+## 데이터셋
+
+| 구분 | 크기 | 비고 |
+|------|------|------|
+| Train | 9,322 alarmno (1,114 ticketno) | 제조사 A만 존재 |
+| Test | 37,671 alarmno (4,327 ticketno) | 제조사 A 7% / B 70% / C 23% |
+| 단위 | alarmno (행 단위) | 하나의 ticketno에 여러 alarmno 포함 (평균 8.7개) |
+| 타겟 | 장애 유형 3종 | LinkCut, PowerFail, UnitFail |
+
+### 클래스 분포 (Train)
+
+| 장애 유형 | 비율 |
+|---------|------|
+| LinkCut | 50.18% |
+| UnitFail | 30.97% |
+| PowerFail | 18.85% |
+
+### 결측치 현황
+
+| 구분 | slot | port |
+|------|------|------|
+| Train | 365개 (3.92%) | 597개 (6.40%) |
+| Test | 2,781개 (7.38%) | 2,818개 (7.48%) |
+
+### 주요 피처
+
+| 피처 | 설명 | 사용 여부 |
+|------|------|---------|
+| alarmmsg_original | 경보 메시지 텍스트 | **모델 입력** |
+| ticketno | 전표 번호 (경보 그룹 단위) | 집계 기준 |
+| alarmtime | 경보 발생 시각 | 정렬 기준 |
+| alarmlevel | 경보 심각도 | 정렬 기준 |
+| unit, slot, port | 장치 위치 정보 | 미사용 (제조사마다 상이) |
+| sysname | 장치 이름 | 미사용 (제조사마다 상이) |
+
+---
+
+## 실행 순서
+
+| 순서 | 파일 | 내용 |
+|------|------|------|
+| 1 | EDA.ipynb | 데이터 탐색, 클래스 분포, 제조사별 표현 차이 분석 |
+| 2 | fasttext_model.ipynb | FastText 기반 서브워드 학습 및 키워드 패턴 분류 |
+| 3 | lightgbm_FastText_model.ipynb | FastText 임베딩 + LightGBM 최종 분류 |
+| 4 | transformer_model.ipynb | Transformer 시퀀스 학습 |
+| 5 | soft_voting_with_model_3.ipynb | 3개 모델 Soft Voting 앙상블 |
