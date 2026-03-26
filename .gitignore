@@ -1,6 +1,7 @@
 ########################
 # wireless-traffic-prediction 제외 대상
 ########################
+wireless-traffic-prediction/1_작성코드/
 wireless-traffic-prediction/2_저장된모델/
 wireless-traffic-prediction/3_모델설명서/
 wireless-traffic-prediction/1_작성코드/4_모델비교.ipynb
