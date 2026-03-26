@@ -17,8 +17,6 @@
 | 문제 유형 | 텍스트 분류 (NLP) |
 | 평가 지표 | Accuracy (ticketno 단위) |
 
-![데이터 탐색 및 핵심 문제 정의](./images/슬라이드6.PNG)
-
 ---
 
 ## 문제 정의
@@ -34,10 +32,6 @@
 | PSU-FAIL | BATTERY_FAIL | Input Power Degrade Defect | PowerFail |
 | ETH-ERR | ETHER_LINK_DOWN(LOS) | Loss Of Signal | LinkCut |
 | OPT-LOS | LOSS_OF_SIGNAL | Loss Of Signal | LinkCut |
-
-![텍스트 정규화 및 시퀀스 설계](./images/슬라이드7.PNG)
-
-![모델링 및 성과](./images/슬라이드8.PNG)
 
 ---
 
