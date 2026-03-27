@@ -68,6 +68,7 @@
 
 # 3. 텍스트 정규화 및 시퀀스 설계
 
+<img width="912" height="272" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
@@ -102,8 +103,16 @@
 
 정규화 후에도 제조사별 변형이 남아 키워드·조합·문맥 세 관점에서 분류 → **3개 모델 앙상블**
 
+
+- <img width="264" height="103" alt="fasttext_lgbm" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
+
 - **fastText (Facebook AI)**: 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
+  
+<img width="1658" height="705" alt="lgbm" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
 - **FastText 임베딩 + LightGBM**: 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
+
+- <img width="1683" height="799" alt="fasttext" src="https://github.com/user-attachments/assets/2b919587-b7f8-4e8b-9ae7-9d217a61939c" />
+
 - **Transformer (Keras)**: 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
 - 모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.
 
