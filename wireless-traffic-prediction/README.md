@@ -57,12 +57,12 @@
   - Test(B) → A, C, D와 같은 커버리지 구역(PA1)으로 판단
   - Test(J) → I와 같은 커버리지 구역(PA2)으로 판단
 
-<img width="700" alt="기지국 A 제거 후 분산 감소" src="https://github.com/user-attachments/assets/82c5d368-9230-4ea3-b48d-a7410f0d575b" />
+<img width="650" alt="기지국 A 제거 후 분산 감소" src="https://github.com/user-attachments/assets/82c5d368-9230-4ea3-b48d-a7410f0d575b" />
 
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 **48% 감소** (std 3.05 → 1.58)
 - 최종 선택: C, D, I, H / 제외: A, E, F, G
 
-<img width="900" alt="기지국 선별 결과" src="station_selection_table.png" />
+<img width="950" alt="기지국 선별 결과" src="station_selection_table.png" />
 
 ---
 
