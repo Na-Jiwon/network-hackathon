@@ -13,7 +13,7 @@
 
 ## 프로젝트 구성
 
-### 📡 [해커톤/ML] ETRI·KT AI 해커톤 최우수상 — 무선트래픽 예측 (시계열)(https://github.com/Na-Jiwon/network-hackathon/tree/main/wireless-traffic-prediction)
+### 📡 [[해커톤/ML] ETRI·KT AI 해커톤 최우수상 — 무선트래픽 예측 (시계열)](https://github.com/Na-Jiwon/network-hackathon/tree/main/wireless-traffic-prediction)
 무선 기지국 RU 통계 데이터를 기반으로 축제 지역 인구 수를 예측하는 회귀 모델
 
 - **데이터**: 업/다운링크, BLER, RSSI, 단말 수 등 5분 단위 RU 통계
@@ -21,7 +21,7 @@
 - **핵심**: 유의미한 피처 선택, 시계열 주기성 반영
 - **평가**: MAE (평균 절대 오차)
 
-### 🚨 [해커톤/NLP] ETRI·KT AI 해커톤 최우수상 — 장애경보 분류 (텍스트분류)(https://github.com/Na-Jiwon/network-hackathon/tree/main/fault-alarm-classification)
+### 🚨 [[해커톤/NLP] ETRI·KT AI 해커톤 최우수상 — 장애경보 분류 (텍스트분류)](https://github.com/Na-Jiwon/network-hackathon/tree/main/fault-alarm-classification)
 전표별 통신 경보 메시지를 링크/유니트/전원 장애로 분류하는 NLP 모델
 
 - **데이터**: 경보 메시지, 발생 시각/위치, 장애 유형 레이블
@@ -29,7 +29,7 @@
 - **핵심**: 제조사별 경보 표현 차이 처리 (수동 딕셔너리 86개 규칙), 경보 발생 순서 고려
 - **평가**: Accuracy
 
-### 🤖 [개인프로젝트/LLM] 해커톤 수동 규칙 한계를 RAG Agent로 개선(https://github.com/Na-Jiwon/network-hackathon/tree/main/alarm-rag-agent)
+### 🤖 [[개인프로젝트/LLM] 해커톤 수동 규칙 한계를 RAG Agent로 개선](https://github.com/Na-Jiwon/network-hackathon/tree/main/alarm-rag-agent)
 해커톤 분야2의 한계(수동 규칙 의존)를 **LLM + RAG**로 개선한 후속 프로젝트
 
 - 기존 방식의 수동 딕셔너리 86개 규칙 → 규칙 없이 자동 분류
