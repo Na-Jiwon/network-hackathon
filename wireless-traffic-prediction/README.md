@@ -44,11 +44,15 @@
 | 결측치 | Train 16개 변수 9건 (0.006%) | Test 결측 없음 |
 | 타겟 | uenomax | 기지국 범위 내 단말 수 최댓값 (단말 1대 = 사용자 1명) |
 
+### 2-1. 스파이크 발견
+
 <img width="650" alt="스파이크 발견" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
 
 - 축제 기간 기지국 A에서 uenomax 스파이크가 발견됐다. (최대 74)
   - 다른 기지국 max = 6~20인데 A만 비정상적으로 높다.
   - Test 기지국에서는 해당 패턴이 없어서 학습 데이터에 포함하면 분포 왜곡이 발생한다.
+
+### 2-2. 기지국 선별 근거
 
 <img width="850" alt="Paging Area 기반 기지국 매칭" src="https://github.com/user-attachments/assets/127bcb3c-f01d-464d-bc1c-e97a705c280c" />
 
@@ -78,7 +82,7 @@
 
 ### 3-2. 시간대 변수 생성
 
-<img width="800" alt="시간대별 uenomax 평균" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
+<img width="650" alt="시간대별 uenomax 평균" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
 
 - 시간대별 uenomax 평균 차이가 뚜렷하다. (2.38~4.75) → 시간대 변수를 추가했다.
 
