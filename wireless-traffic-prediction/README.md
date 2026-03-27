@@ -51,14 +51,94 @@
 
 <img width="800" alt="Paging Area 기반 기지국 매칭" src="https://github.com/user-attachments/assets/127bcb3c-f01d-464d-bc1c-e97a705c280c" />
 
+- **attpaging**(페이징 시도 횟수): 코어 네트워크가 동일한 호출 신호를 보내는 기지국 그룹을 의미한다. 같은 Paging Area(PA)에 속한 기지국들은 attpaging 값이 유사하게 나타나므로, 이 값을 비교하면 **같은 커버리지 구역에 있는 기지국을 식별**할 수 있다.
 - attpaging 값 비교로 Test 기지국과 유사 커버리지 기지국을 매칭했다.
-  - Test(B) → A, C, D와 같은 커버리지 구역으로 판단
-  - Test(J) → I와 같은 커버리지 구역으로 판단
+  - Test(B) → A, C, D와 같은 커버리지 구역(PA1)으로 판단
+  - Test(J) → I와 같은 커버리지 구역(PA2)으로 판단
 
 <img width="800" alt="기지국 A 제거 후 분산 감소" src="https://github.com/user-attachments/assets/82c5d368-9230-4ea3-b48d-a7410f0d575b" />
 
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 **48% 감소** (std 3.05 → 1.58)
 - 최종 선택: C, D, I, H / 제외: A, E, F, G
+
+<table>
+  <thead>
+    <tr>
+      <th>Station</th>
+      <th>Paging Area</th>
+      <th>uenomax mean</th>
+      <th>uenomax max</th>
+      <th>Decision</th>
+      <th>Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color: #e6fff2;">
+      <td align="center"><b>C</b></td>
+      <td align="center">PA1</td>
+      <td align="center">3.8</td>
+      <td align="center">12</td>
+      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
+      <td>B와 동일 PA, 안정적</td>
+    </tr>
+    <tr style="background-color: #e6fff2;">
+      <td align="center"><b>D</b></td>
+      <td align="center">PA1</td>
+      <td align="center">3.2</td>
+      <td align="center">10</td>
+      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
+      <td>B와 동일 PA, 안정적</td>
+    </tr>
+    <tr style="background-color: #e6fff2;">
+      <td align="center"><b>I</b></td>
+      <td align="center">PA2</td>
+      <td align="center">1.6</td>
+      <td align="center">6</td>
+      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
+      <td>J와 동일 PA</td>
+    </tr>
+    <tr style="background-color: #e6fff2;">
+      <td align="center"><b>H</b></td>
+      <td align="center">Other</td>
+      <td align="center">2.2</td>
+      <td align="center">10</td>
+      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
+      <td>I/J와 유사 저트래픽</td>
+    </tr>
+    <tr style="background-color: #ffe6e6;">
+      <td align="center"><b>A</b></td>
+      <td align="center">PA1</td>
+      <td align="center">3.7</td>
+      <td align="center"><b style="color: #cc0000;">74</b></td>
+      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
+      <td>축제 스파이크 이상치</td>
+    </tr>
+    <tr style="background-color: #ffe6e6;">
+      <td align="center"><b>E</b></td>
+      <td align="center">Other</td>
+      <td align="center">4.4</td>
+      <td align="center">13</td>
+      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
+      <td>다른 PA, 고트래픽</td>
+    </tr>
+    <tr style="background-color: #ffe6e6;">
+      <td align="center"><b>F</b></td>
+      <td align="center">Other</td>
+      <td align="center">6.9</td>
+      <td align="center">20</td>
+      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
+      <td>다른 PA, 초고트래픽</td>
+    </tr>
+    <tr style="background-color: #ffe6e6;">
+      <td align="center"><b>G</b></td>
+      <td align="center">Other</td>
+      <td align="center">3.9</td>
+      <td align="center">12</td>
+      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
+      <td>다른 PA, 결측 데이터</td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 
