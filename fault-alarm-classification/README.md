@@ -100,14 +100,14 @@
 <img width="400" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
 
 - 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
-<br/1>
+<br /1>
 
 ### 4-2. FastText 임베딩 + LightGBM
 
 <img width="800" alt="FastText 임베딩 + LightGBM 구조" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
 
 - 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
-<br/1>
+<br /1>
 
 ### 4-3. Transformer (Keras)
 
@@ -115,7 +115,7 @@
 
 - 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
 - 모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.
-<br/1>
+<br /1>
 
 ### 4-4. Soft Voting 앙상블
 
