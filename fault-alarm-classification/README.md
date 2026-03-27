@@ -45,7 +45,7 @@
 | 단위 | alarmno (행 단위) | 하나의 ticketno에 여러 alarmno 포함 (평균 8.7개) |
 | 타겟 | 장애 유형 3종 | LinkCut, PowerFail, UnitFail |
 
-- 결측치: slot, port 컬럼에만 존재 (Train 3.9~6.4% / Test 7.4~7.5%)
+- 결측치: slot, port 컬럼에만 존재 (Train 3.9-6.4% / Test 7.4-7.5%)
 - 타겟 분포: LinkCut 50.18% / UnitFail 30.97% / PowerFail 18.85%
 - 모델 입력: **alarmmsg_original** (경보 메시지 텍스트)
 - 미사용 피처: unit, slot, port, sysname — 장치 제조사마다 표현이 상이하여 일반화 불가
@@ -67,6 +67,7 @@
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
+<br />
 
 <br />
 
@@ -84,7 +85,12 @@
 
 인접 시간·인접 장치에서 발생한 경보들은 상호 연관성을 가지므로 하나의 전표(ticketno)로 군집화된다. 이 경보들을 시퀀스로 결합하는 과정:
 
+<<<<<<< HEAD
 `인접 시간·장치의 경보 발생` → `ticketno ID 기준 집계` → `alarmlevel 오름차순 정렬` → `동일 경보 메시지 제거` → `ticketno ID의 경보 메시지 조합 생성`
+=======
+ `인접 시간·장치의 경보 발생` → `ticketno ID 기준 집계` → `alarmlevel 오름차순 정렬` → `동일 경보 메시지 제거` → `ticketno ID의 경보 메시지 조합 생성`
+
+>>>>>>> ff4d86e9120caf2c6dbc31356acf0ec28a3cab8f
 
 - `,`(콤마): 시퀀스 내에서의 경보 메시지 구분 / `-`(하이픈): 경보 메시지 내에서의 단어 구분
 - 형성된 시퀀스를 이루는 단어의 순서와 위치에 의해 모델 성능 차이가 발생한다.
@@ -104,8 +110,11 @@
 <img width="400" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
 
 - **서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점**
+<<<<<<< HEAD
 - **정규화된 공통 토큰에서 서브워드 패턴을 학습하므로, 미학습 제조사 경보도 유사 서브워드 조합으로 분류 가능하다.**
 
+=======
+>>>>>>> ff4d86e9120caf2c6dbc31356acf0ec28a3cab8f
 <br />
 
 ### 4-2. FastText 임베딩 + LightGBM
@@ -113,7 +122,10 @@
 <img width="800" alt="FastText 임베딩 + LightGBM 구조" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
 
 - **임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강**
+<<<<<<< HEAD
 
+=======
+>>>>>>> ff4d86e9120caf2c6dbc31356acf0ec28a3cab8f
 <br />
 
 ### 4-3. Transformer (Keras)
@@ -122,7 +134,10 @@
 
 - **소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습**
 - **모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.**
+<<<<<<< HEAD
 
+=======
+>>>>>>> ff4d86e9120caf2c6dbc31356acf0ec28a3cab8f
 <br />
 
 ### 4-4. Soft Voting 앙상블
@@ -177,6 +192,10 @@
 | sva | 경보 심각도 | 미사용 |
 | site | 경보 발생 지역 (익명화) | 미사용 |
 | sysname | 장치 이름 (익명화) | 미사용 (제조사마다 상이) |
+<<<<<<< HEAD
 | unit, slot, port | 장치 내 위치 정보 | 미사용 (결측 多, 제조사마다 상이) |
 
 </details>
+=======
+| unit, slot, port | 장치 �
+>>>>>>> ff4d86e9120caf2c6dbc31356acf0ec28a3cab8f
