@@ -63,22 +63,25 @@
 
 # 3. 텍스트 정규화 및 시퀀스 설계
 
+<img width="912" height="272" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
-<img width="2179" height="513" alt="normalization_example" src="https://github.com/user-attachments/assets/c2f538de-38b9-456c-8a19-18f7d51f470e" />
 
 ### 3-2. 도메인 용어 표준화
 
 - 축약어를 풀어 제조사 간 공통 토큰 확보 → fastText 서브워드가 공통 토큰으로 유사성 학습 가능
 - 총 **86개 매핑 규칙** 적용 (A사 30개, B사 32개, C사 24개)
+
   
 <img width="908" height="612" alt="메시지오름차순정렬" src="https://github.com/user-attachments/assets/8fbe8579-ac28-496f-aecb-f4f48bbe3186" />
-
 ### 3-3. ticketno 단위 시퀀스 피처 설계
 
 - alarmlevel 오름차순 정렬 → 콤마로 경보 메시지 연결
 - 하나의 ticketno에 포함된 여러 경보 메시지를 하나의 시퀀스로 결합해서 모델 입력으로 사용했다.
+- ,(콤마): 시퀀스 내에서의 경보 메시지 구분
+- -(하이픈): 경보 메시지 내에서의 단어 구분
+
 
 ---
 
