@@ -8,11 +8,7 @@
 |------|------|
 | 기간 | 2023.07 ~ 09 (3개월) |
 | 인원 | 4인 팀 |
-<<<<<<< HEAD
 | 역할 | 이상 기지국 식별·제거 및 PA 기반 유사 기지국 선별, 피처 엔지니어링, ARIMA/LSTM 한계 확인 후 트리 기반 전환 근거 수립, 앙상블 설계 |
-=======
-| 역할 | - ARIMA/SARIMA 한계 확인 후 트리 기반 모델로 전환 <br> - attpaging 기반 Paging Area 분석으로 학습-테스트 분포 차이 해결 <br> - Lag/시간대 피처 설계 및 모델링 |
->>>>>>> be2e0762788113cdcccdfc1e1dccfe90b43ab59b
 | 대회 | ETRI·KT 통신망 안정화 AI 해커톤 |
 | 평가 지표 | MAE (Mean Absolute Error) |
 
@@ -119,12 +115,7 @@
     --> 다양한 접근을 실험한 뒤 현재 구조 선택
   
 - **튜닝**: Optuna로 각 모델을 개별 튜닝했다. → 탐색 범위 설정 후 교차검증 기반으로 최적 파라미터를 선정했다.
-<<<<<<< HEAD
 - **앙상블**: XGB + LGBM 예측을 균등 평균했다. → 두 모델의 오차가 나는 구간이 달라 상호 보완됐다. XGBoost는 전반적 추세에 안정적이고, LightGBM은 리프 우선 분할로 국소 패턴에 반응해 서로 다른 오차 패턴을 보였다. 가중치 비율 실험 결과 균등 평균(1:1)이 모든 조합 중 최저 MAE를 기록했다.
-=======
-  
-- **앙상블**: XGB + LGBM 예측을 균등 평균했다. → 다양한 가중치 조합을 실험한 결과 균등 평균이 가장 안정적인 성능을 기록했다.
->>>>>>> be2e0762788113cdcccdfc1e1dccfe90b43ab59b
   - 80% 데이터로 검증 → 100% 재학습 후 최종 제출했다.
 
 | model | Validation MAE | Test MAE |
@@ -143,12 +134,7 @@
 # 5. 결론
 
 - **최종 성과**: MAE 0.3990 (리더보드 6위 / 59팀)
-<<<<<<< HEAD
 - **모델보다 데이터 구성이 성능을 결정했다.** Paging Area 기반 기지국 선별과 이상 기지국(A) 제거가 가장 큰 성능 기여 요인이었다. 모델 아키텍처를 바꾸거나 하이퍼파라미터를 튜닝하는 것보다, 학습 데이터를 올바르게 구성하는 것이 더 직접적인 성능 향상으로 이어졌다.
-=======
-- 단순 모델 개선보다도메인 지식을 활용한 데이터 선별이 성능에 더 큰 영향을 미쳤다.
-- Paging Area 기반 기지국 선별을 통해 학습-테스트 간 분포 차이를 줄이고 일반화 성능을 확보했다.
->>>>>>> be2e0762788113cdcccdfc1e1dccfe90b43ab59b
 - 트리 기반 앙상블 + Lag 피처 조합으로 시계열 특성과 다변량 피처를 동시에 활용할 수 있었다.
 
 ---
@@ -195,35 +181,4 @@
 
 | 피처 | 설명 |
 |------|------|
-| rlculbyte / rlcdlbyte | 업링크 / 다운링크 데이터 크기 |
-| airmaculbyte / airmacdlbyte | 물리 채널 기반 업/다운링크 데이터 크기 |
-| totprbulavg / totprbdlavg | 업/다운링크 무선 자원(PRB) 사용 평균 |
-| bler_ul / bler_dl | 업/다운링크 블록 오류율 |
-| dlreceivedriavg | 수신 신호 경로 수(RI) 평균 |
-| dltransmittedmcsavg | 데이터 전송 방식(MCS) 평균 |
-| dlreceivedcqiavg | 채널 품질(CQI) 평균 |
-| rssipathavg | 수신 신호 세기(RSSI) 평균 |
-| rachpreamblea | 네트워크 신규 연결 시도(Preamble) 수 |
-| numrar / nummsg3 | 접속 응답(RAR) / MSG3 응답 횟수 |
-| attpaging | 페이징 시도 횟수 |
-| redirectiontolte_coverageout | 5G→LTE 전환 (커버리지 이탈) |
-| redirectiontolte_epsfallback | 5G→LTE 전환 (EPS Fallback) |
-| redirectiontolte_emergencyfallback | 5G→LTE 전환 (긴급 Fallback) |
-
-</details>
-
-<details>
-<summary><b>약어 정리</b></summary>
-
-| 약어 | 의미 |
-|------|------|
-| CQI | Channel Quality Indicator |
-| E-RAB | E-UTRAN Radio Access Bearer |
-| MCS | Modulation and Coding Scheme |
-| MeNB | Master E-UTRAN Node B |
-| PA | Paging Area |
-| PRB | Physical Resource Block |
-| RI | Rank Indicator |
-| RSSI | Received Signal Strength Indicator |
-| RU | Radio Unit |
-| SCG | Se
+| rlculbyte / rlcdlbyte | 업링크 / 다운링크 데이터 �
