@@ -44,25 +44,29 @@
 | 결측치 | Train 16개 변수 9건 (0.006%) | Test 결측 없음 |
 | 타겟 | uenomax | 기지국 범위 내 단말 수 최댓값 (단말 1대 = 사용자 1명) |
 
-<img width="800" alt="스파이크 발견" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
+### 2-1. 스파이크 발견
+
+<img width="650" alt="스파이크 발견" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
 
 - 축제 기간 기지국 A에서 uenomax 스파이크가 발견됐다. (최대 74)
   - 다른 기지국 max = 6~20인데 A만 비정상적으로 높다.
   - Test 기지국에서는 해당 패턴이 없어서 학습 데이터에 포함하면 분포 왜곡이 발생한다.
 
-<img width="800" alt="Paging Area 기반 기지국 매칭" src="https://github.com/user-attachments/assets/127bcb3c-f01d-464d-bc1c-e97a705c280c" />
+### 2-2. 기지국 선별 근거
+
+<img width="850" alt="Paging Area 기반 기지국 매칭" src="https://github.com/user-attachments/assets/127bcb3c-f01d-464d-bc1c-e97a705c280c" />
 
 - **attpaging**(페이징 시도 횟수): 코어 네트워크가 동일한 호출 신호를 보내는 기지국 그룹을 의미한다. 같은 Paging Area(PA)에 속한 기지국들은 attpaging 값이 유사하게 나타나므로 이 값을 비교하면 **같은 커버리지 구역에 있는 기지국을 식별**할 수 있다.
 - attpaging 값 비교로 Test 기지국과 유사 커버리지 기지국을 매칭했다.
   - Test(B) → A, C, D와 같은 커버리지 구역(PA1)으로 판단
   - Test(J) → I와 같은 커버리지 구역(PA2)으로 판단
 
-<img width="800" alt="기지국 A 제거 후 분산 감소" src="https://github.com/user-attachments/assets/82c5d368-9230-4ea3-b48d-a7410f0d575b" />
+<img width="650" alt="기지국 A 제거 후 분산 감소" src="https://github.com/user-attachments/assets/82c5d368-9230-4ea3-b48d-a7410f0d575b" />
 
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 **48% 감소** (std 3.05 → 1.58)
 - 최종 선택: C, D, I, H / 제외: A, E, F, G
 
-<img width="800" alt="기지국 선별 결과" src="station_selection_table.png" />
+<img width="950" alt="기지국 선별 결과" src="station_selection_table.png" />
 
 ---
 
@@ -78,7 +82,7 @@
 
 ### 3-2. 시간대 변수 생성
 
-<img width="800" alt="시간대별 uenomax 평균" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
+<img width="650" alt="시간대별 uenomax 평균" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
 
 - 시간대별 uenomax 평균 차이가 뚜렷하다. (2.38~4.75) → 시간대 변수를 추가했다.
 
