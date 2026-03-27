@@ -170,4 +170,18 @@
 ---
 
 <details>
-<summary><b>주요 피�
+<summary><b>주요 피처</b></summary>
+
+| 피처 | 설명 | 사용 여부 |
+|------|------|---------|
+| alarmmsg_original | 경보 메시지 텍스트 | **모델 입력** |
+| ticketno | 전표 번호 (경보 그룹 단위) | 집계 기준 |
+| alarmno | 경보 ID (최소 단위) | 행 식별 |
+| alarmtime | 경보 발생 시각 | 정렬 기준 |
+| alarmlevel | 경보 등급 분류 | 정렬 기준 |
+| sva | 경보 심각도 | 미사용 |
+| site | 경보 발생 지역 (익명화) | 미사용 |
+| sysname | 장치 이름 (익명화) | 미사용 (제조사마다 상이) |
+| unit, slot, port | 장치 내 위치 정보 | 미사용 (결측 多, 제조사마다 상이) |
+
+</details>�
