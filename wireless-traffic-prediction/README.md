@@ -44,7 +44,7 @@
 | 결측치 | Train 16개 변수 9건 (0.006%) | Test 결측 없음 |
 | 타겟 | uenomax | 기지국 범위 내 단말 수 최댓값 (단말 1대 = 사용자 1명) |
 
-<img width="800" alt="스파이크 발견" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
+<img width="650" alt="스파이크 발견" src="https://github.com/user-attachments/assets/62cac9e1-510b-4451-bb33-d70faefb8ba6" />
 
 - 축제 기간 기지국 A에서 uenomax 스파이크가 발견됐다. (최대 74)
   - 다른 기지국 max = 6~20인데 A만 비정상적으로 높다.
