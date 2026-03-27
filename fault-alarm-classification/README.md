@@ -64,8 +64,6 @@
 
 # 3. 텍스트 정규화 및 시퀀스 설계
 
-<img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
-
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
@@ -76,7 +74,9 @@
 - 총 **86개 매핑 규칙** 적용 (A사 30개, B사 32개, C사 24개)
 - 제조사마다 다른 표현이 정규화를 통해 공통 토큰으로 변환된다. → fastText 서브워드가 이 공통 토큰으로 유사성을 학습할 수 있다.
 
-<img width="908" height="612" alt="메시지오름차순정렬" src="https://github.com/user-attachments/assets/5885916b-3e99-4c6a-8962-0d4013750c5e" />
+- <img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
+
+
 
 ### 3-3. ticketno 단위 경보 메시지 조합 생성
 
@@ -87,6 +87,7 @@
 
 - `,`(콤마): 시퀀스 내에서의 경보 메시지 구분 / `-`(하이픈): 경보 메시지 내에서의 단어 구분
 - 형성된 시퀀스를 이루는 단어의 순서와 위치에 의해 모델 성능 차이가 발생한다.
+- <img width="600" height="612" alt="메시지오름차순정렬" src="https://github.com/user-attachments/assets/5885916b-3e99-4c6a-8962-0d4013750c5e" />
 
 
 - 모델마다 최적의 메시지 조합이 다르다. → 각 모델에 가장 높은 성능을 보이는 조합을 개별 적용했다.
