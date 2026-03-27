@@ -22,9 +22,12 @@ fault-alarm-classification/모델 설명서/
 alarm-rag-agent/data/
 fault-alarm-classification/data/
 
+
+
 ########################
 # 공통 제외 (이중 안전)
 ########################
+*.png
 *.pkl
 *.pt
 *.csv
