@@ -8,7 +8,7 @@
 |------|------|
 | 기간 | 2023.07 ~ 09 (3개월) |
 | 인원 | 4인 팀 |
-| 역할 | ARIMA/SARIMA 한계 확인 후 트리 기반 모델로 전환 <br> attpaging 기반 Paging Area 분석으로 학습-테스트 분포 차이 해결 <br> Lag/시간대 피처 설계 및 모델링 |
+| 역할 | - ARIMA/SARIMA 한계 확인 후 트리 기반 모델로 전환 <br> - attpaging 기반 Paging Area 분석으로 학습-테스트 분포 차이 해결 <br> - Lag/시간대 피처 설계 및 모델링 |
 | 대회 | ETRI·KT 통신망 안정화 AI 해커톤 |
 | 평가 지표 | MAE (Mean Absolute Error) |
 
