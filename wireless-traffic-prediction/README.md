@@ -21,6 +21,7 @@
 - [3. 피처 엔지니어링](#3-피처-엔지니어링)
 - [4. 모델링 및 성과](#4-모델링-및-성과)
 - [5. 결론](#5-결론)
+- [6. 배운점](#6-배운점)
 
 ---
 
@@ -61,84 +62,7 @@
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 **48% 감소** (std 3.05 → 1.58)
 - 최종 선택: C, D, I, H / 제외: A, E, F, G
 
-<table>
-  <thead>
-    <tr>
-      <th>Station</th>
-      <th>Paging Area</th>
-      <th>uenomax mean</th>
-      <th>uenomax max</th>
-      <th>Decision</th>
-      <th>Reason</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="background-color: #e6fff2;">
-      <td align="center"><b>C</b></td>
-      <td align="center">PA1</td>
-      <td align="center">3.8</td>
-      <td align="center">12</td>
-      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
-      <td>B와 동일 PA, 안정적</td>
-    </tr>
-    <tr style="background-color: #e6fff2;">
-      <td align="center"><b>D</b></td>
-      <td align="center">PA1</td>
-      <td align="center">3.2</td>
-      <td align="center">10</td>
-      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
-      <td>B와 동일 PA, 안정적</td>
-    </tr>
-    <tr style="background-color: #e6fff2;">
-      <td align="center"><b>I</b></td>
-      <td align="center">PA2</td>
-      <td align="center">1.6</td>
-      <td align="center">6</td>
-      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
-      <td>J와 동일 PA</td>
-    </tr>
-    <tr style="background-color: #e6fff2;">
-      <td align="center"><b>H</b></td>
-      <td align="center">Other</td>
-      <td align="center">2.2</td>
-      <td align="center">10</td>
-      <td align="center"><b style="color: #00997a;">SELECTED</b></td>
-      <td>I/J와 유사 저트래픽</td>
-    </tr>
-    <tr style="background-color: #ffe6e6;">
-      <td align="center"><b>A</b></td>
-      <td align="center">PA1</td>
-      <td align="center">3.7</td>
-      <td align="center"><b style="color: #cc0000;">74</b></td>
-      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
-      <td>축제 스파이크 이상치</td>
-    </tr>
-    <tr style="background-color: #ffe6e6;">
-      <td align="center"><b>E</b></td>
-      <td align="center">Other</td>
-      <td align="center">4.4</td>
-      <td align="center">13</td>
-      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
-      <td>다른 PA, 고트래픽</td>
-    </tr>
-    <tr style="background-color: #ffe6e6;">
-      <td align="center"><b>F</b></td>
-      <td align="center">Other</td>
-      <td align="center">6.9</td>
-      <td align="center">20</td>
-      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
-      <td>다른 PA, 초고트래픽</td>
-    </tr>
-    <tr style="background-color: #ffe6e6;">
-      <td align="center"><b>G</b></td>
-      <td align="center">Other</td>
-      <td align="center">3.9</td>
-      <td align="center">12</td>
-      <td align="center"><b style="color: #cc0000;">DROPPED</b></td>
-      <td>다른 PA, 결측 데이터</td>
-    </tr>
-  </tbody>
-</table>
+<img width="800" alt="기지국 선별 결과" src="station_selection_table.png" />
 
 ---
 
@@ -179,13 +103,24 @@
 | XGBoost | 0.4919 | 0.5148 |
 | Random Forest | 0.4929 | 0.5034 |
 
+> **참고**: 위 Test MAE는 자체 테스트셋 기준이고, 최종 리더보드 점수(MAE 0.3990)는 대회 측 평가 데이터셋 기준이다.
+
 ---
 
 # 5. 결론
 
 - **최종 성과**: MAE 0.3990 (리더보드 6위 / 59팀)
+- Paging Area 기반 기지국 선별이 가장 큰 성능 기여 요인이었다. 도메인 지식을 활용한 데이터 선별이 모델 복잡도를 높이는 것보다 효과적이었다.
+- 트리 기반 앙상블 + Lag 피처 조합으로 시계열 특성과 다변량 피처를 동시에 활용할 수 있었다.
 
-<!-- 여기에 배운점이나 회고를 자유롭게 추가하세요 -->
+---
+
+# 6. 배운점
+
+- **도메인 지식의 중요성**: 통신 도메인 지식 없이는 attpaging으로 Paging Area를 식별하는 접근이 불가능했다. 데이터를 잘 고르는 것이 모델을 잘 만드는 것보다 선행되어야 한다는 걸 체감했다.
+- **이상치 처리의 임팩트**: 기지국 A 하나를 제거했을 뿐인데 분산이 48% 감소했다. 이상치를 단순히 통계적으로 제거하는 것이 아니라, 왜 이상치인지(축제 스파이크)를 이해하고 제거 근거를 명확히 하는 과정이 중요했다.
+- **단순한 앙상블의 효과**: 복잡한 가중치 앙상블보다 XGB + LGBM 균등 평균이 최적이었다. 모델 다양성이 확보되면 단순 평균만으로도 충분한 성능 개선을 얻을 수 있었다.
+- **선행실험의 가치**: ARIMA/SARIMA로 시작해서 한계를 직접 확인한 뒤 트리 기반으로 전환했다. 실패한 실험도 모델 선택의 근거가 되었고, 왜 특정 모델을 선택했는지 설명할 수 있게 해줬다.
 
 ---
 
@@ -248,6 +183,7 @@
 | E-RAB | E-UTRAN Radio Access Bearer |
 | MCS | Modulation and Coding Scheme |
 | MeNB | Master E-UTRAN Node B |
+| PA | Paging Area |
 | PRB | Physical Resource Block |
 | RI | Rank Indicator |
 | RSSI | Received Signal Strength Indicator |
