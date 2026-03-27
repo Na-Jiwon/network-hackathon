@@ -77,7 +77,6 @@
 - <img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
 
 
-
 ### 3-3. ticketno 단위 경보 메시지 조합 생성
 
 인접 시간·인접 장치에서 발생한 경보들은 상호 연관성을 가지므로 하나의 전표(ticketno)로 군집화된다. 이 경보들을 시퀀스로 결합하는 과정:
@@ -101,12 +100,14 @@
 <img width="400" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
 
 - 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
+<br/1>
 
 ### 4-2. FastText 임베딩 + LightGBM
 
 <img width="800" alt="FastText 임베딩 + LightGBM 구조" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
 
 - 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
+<br/1>
 
 ### 4-3. Transformer (Keras)
 
@@ -114,14 +115,15 @@
 
 - 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
 - 모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.
+<br/1>
 
 ### 4-4. Soft Voting 앙상블
 
 - 3개 모델의 predict_proba 균등 평균(1/3)
 - 모델별 특징이 다르기 때문에 상호보완을 위해 사용했다.
-  - fastText: 서브워드 기반 키워드 패턴
-  - LightGBM: 임베딩 벡터의 비선형 조합
-  - Transformer: 시퀀스 순서·문맥 상호작용
+  - `fastTex`t: 서브워드 기반 키워드 패턴
+  - `LightGBM`: 임베딩 벡터의 비선형 조합
+  - `Transformer`: 시퀀스 순서·문맥 상호작용
 
 ---
 
