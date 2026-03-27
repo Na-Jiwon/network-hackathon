@@ -45,11 +45,7 @@
 | 단위 | alarmno (행 단위) | 하나의 ticketno에 여러 alarmno 포함 (평균 8.7개) |
 | 타겟 | 장애 유형 3종 | LinkCut, PowerFail, UnitFail |
 
-| 구분 | slot 결측 | port 결측 |
-|------|----------|----------|
-| Train | 365개 (3.92%) | 597개 (6.40%) |
-| Test | 2,781개 (7.38%) | 2,818개 (7.48%) |
-
+- 결측치: slot, port 컬럼에만 존재 (Train 3.9~6.4% / Test 7.4~7.5%)
 - 타겟 분포: LinkCut 50.18% / UnitFail 30.97% / PowerFail 18.85%
 - 모델 입력: **alarmmsg_original** (경보 메시지 텍스트)
 - 미사용 피처: unit, slot, port, sysname — 장치 제조사마다 표현이 상이하여 일반화 불가
@@ -68,7 +64,8 @@
 
 # 3. 텍스트 정규화 및 시퀀스 설계
 
-<img width="912" height="272" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
+<img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
+
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
@@ -103,20 +100,32 @@
 
 정규화 후에도 제조사별 변형이 남아 키워드·조합·문맥 세 관점에서 분류 → **3개 모델 앙상블**
 
+### 4-1. fastText (Facebook AI)
 
-- <img width="264" height="103" alt="fasttext_lgbm" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
+<img width="800" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
 
-- **fastText (Facebook AI)**: 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
-  
-<img width="1658" height="705" alt="lgbm" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
-- **FastText 임베딩 + LightGBM**: 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
+- 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
 
-- <img width="1683" height="799" alt="fasttext" src="https://github.com/user-attachments/assets/2b919587-b7f8-4e8b-9ae7-9d217a61939c" />
+### 4-2. FastText 임베딩 + LightGBM
 
-- **Transformer (Keras)**: 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
+<img width="800" alt="FastText 임베딩 + LightGBM 구조" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
+
+- 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
+
+### 4-3. Transformer (Keras)
+
+<img width="800" alt="Transformer 모델 구조" src="https://github.com/user-attachments/assets/2b919587-b7f8-4e8b-9ae7-9d217a61939c" />
+
+- 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
 - 모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.
 
-**Soft Voting 앙상블**: 3개 모델의 predict_proba 균등 평균(1/3) → 모델별 특징이 다르기 때문에 상호보완을 위해 사용했다.
+### 4-4. Soft Voting 앙상블
+
+- 3개 모델의 predict_proba 균등 평균(1/3)
+- 모델별 특징이 다르기 때문에 상호보완을 위해 사용했다.
+  - fastText: 서브워드 기반 키워드 패턴
+  - LightGBM: 임베딩 벡터의 비선형 조합
+  - Transformer: 시퀀스 순서·문맥 상호작용
 
 ---
 
@@ -130,9 +139,10 @@
 
 # 6. 배운점
 
-- **전처리가 모델 성능을 결정한다**: 정규화 없이 fastText를 돌리면 제조사 간 표현 차이로 성능이 크게 하락했다. 모델 튜닝보다 입력 데이터 품질이 성능에 미치는 영향이 더 컸다.
-- **도메인 지식 기반 전처리가 핵심이다**: 제조사별 경보 표현을 수동 분석하여 86개 매핑 규칙을 구축했다. 미학습 제조사 B/C 대응 — 비정형 데이터를 모델이 학습 가능한 구조로 변환하는 과정이 핵심이었다.
-- **완성 후 한계를 인식하는 것도 역량이다**: 해커톤 모델은 Accuracy 0.9448이지만, 새 제조사가 추가될 때마다 규칙 추가 + 재학습이 필요한 구조적 한계가 있다. 이를 인식하고 재학습 없이 미학습 제조사에 즉시 대응하는 RAG Agent로 개선하는 방향을 도출했다. → [alarm-rag-agent](../alarm-rag-agent)
+- **전처리가 곧 성능이다**: 86개 매핑 규칙을 수작업으로 만든 것이 핵심이었다. NLP에서 도메인 특화 전처리가 모델 아키텍처 선택보다 더 큰 영향을 미칠 수 있다는 걸 체감했다.
+- **미학습 도메인 일반화**: Train에 없는 제조사 B/C가 Test의 93%를 차지하는 극단적인 도메인 시프트 상황에서, 제조사 고유 표현을 공통 토큰으로 매핑하는 접근이 효과적이었다. 도메인 지식 기반의 정규화가 모델의 일반화 능력을 결정했다.
+- **앙상블의 상호보완성**: fastText(서브워드), LightGBM(벡터 조합), Transformer(문맥)가 각각 다른 관점에서 분류했기 때문에 단순 평균 앙상블로도 개별 모델 대비 안정적인 성능을 얻었다.
+- **자동화 가능성의 발견**: 수작업 매핑의 한계를 느꼈고, 매핑 규칙 자체를 자동 생성하는 classifier를 만들면 새로운 제조사가 추가되어도 대응할 수 있다는 연구 방향을 도출했다. → [alarm-rag-agent](../alarm-rag-agent)
 
 ---
 
@@ -161,29 +171,4 @@
 | sva | 경보 심각도 | 미사용 |
 | site | 경보 발생 지역 (익명화) | 미사용 |
 | sysname | 장치 이름 (익명화) | 미사용 (제조사마다 상이) |
-| unit, slot, port | 장치 위치 정보 | 미사용 (제조사마다 상이) |
-| root_cause_domain | 장치 제조사명 (A/B/C) | 분석용 |
-| root_cause_type | 장애 유형 (타겟) | **예측 대상** |
-
-</details>
-
-<details>
-<summary><b>약어 정리</b></summary>
-
-| 약어 | 의미 |
-|------|------|
-| AIS | Alarm Indication Signal |
-| CPU | Central Processing Unit |
-| E1 | E-carrier 1 |
-| LLCF | Link Loss Carry Forward |
-| LSP | Label Switched Path |
-| NVRAM | Non-volatile Random Access Memory |
-| OAM | Operation and Maintenance |
-| OOV | Out of Vocabulary |
-| PDH | Plesiochronous Digital Hierarchy |
-| PDP | Power Distribution Panel |
-| PSU | Power Supply Unit |
-| PW | Pseudowire |
-| UTP | Unshielded Twisted Pair |
-
-</details>
+| unit, slot, port | 장치 �
