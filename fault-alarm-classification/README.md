@@ -64,33 +64,32 @@
 
 # 3. 텍스트 정규화 및 시퀀스 설계
 
-<img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
-
 ### 3-1. 표기 및 형식 통일
 
 - 대문자 변환, 특수기호·구분자 통일, 불필요 구문 제거
+
+<br />
 
 ### 3-2. 도메인 용어 표준화
 
 - 축약어를 풀어 제조사 간 공통 토큰 확보 → fastText 서브워드가 공통 토큰으로 유사성 학습 가능
 - 총 **86개 매핑 규칙** 적용 (A사 30개, B사 32개, C사 24개)
-
-<img width="800" alt="정규화 예시 — 제조사별 표현이 공통 토큰으로 변환" src="normalization_example.png" />
-
 - 제조사마다 다른 표현이 정규화를 통해 공통 토큰으로 변환된다. → fastText 서브워드가 이 공통 토큰으로 유사성을 학습할 수 있다.
+
+<img width="800" alt="토큰생성" src="https://github.com/user-attachments/assets/6a8af5c2-2493-4e54-ac7b-73d0510e9e6c" />
+
+<br />
 
 ### 3-3. ticketno 단위 경보 메시지 조합 생성
 
 인접 시간·인접 장치에서 발생한 경보들은 상호 연관성을 가지므로 하나의 전표(ticketno)로 군집화된다. 이 경보들을 시퀀스로 결합하는 과정:
 
-> **인접 시간·장치의 경보 발생** → **ticketno ID 기준 집계** → **alarmlevel 오름차순 정렬** → **동일 경보 메시지 제거** → **ticketno ID의 경보 메시지 조합 생성**
-
-<img width="800" alt="alarmlevel 오름차순 정렬 및 시퀀스 구조" src="sequence_design.png" />
+`인접 시간·장치의 경보 발생` → `ticketno ID 기준 집계` → `alarmlevel 오름차순 정렬` → `동일 경보 메시지 제거` → `ticketno ID의 경보 메시지 조합 생성`
 
 - `,`(콤마): 시퀀스 내에서의 경보 메시지 구분 / `-`(하이픈): 경보 메시지 내에서의 단어 구분
 - 형성된 시퀀스를 이루는 단어의 순서와 위치에 의해 모델 성능 차이가 발생한다.
 
-<img width="800" alt="각 모델별 조합 비교" src="model_combination_comparison.png" />
+<img width="600" height="612" alt="메시지오름차순정렬" src="https://github.com/user-attachments/assets/5885916b-3e99-4c6a-8962-0d4013750c5e" />
 
 - 모델마다 최적의 메시지 조합이 다르다. → 각 모델에 가장 높은 성능을 보이는 조합을 개별 적용했다.
 
@@ -102,30 +101,37 @@
 
 ### 4-1. fastText (Facebook AI)
 
-<img width="800" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
+<img width="400" alt="fastText 모델 구조" src="https://github.com/user-attachments/assets/22ccb0b4-f20e-4502-966a-ce963b9eb02b" />
 
-- 서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점
+- **서브워드 + 바이그램으로 키워드 패턴 학습, OOV·변형 표현 처리에 강점**
+- **정규화된 공통 토큰에서 서브워드 패턴을 학습하므로, 미학습 제조사 경보도 유사 서브워드 조합으로 분류 가능하다.**
+
+<br />
 
 ### 4-2. FastText 임베딩 + LightGBM
 
 <img width="800" alt="FastText 임베딩 + LightGBM 구조" src="https://github.com/user-attachments/assets/167ca29b-83d0-459f-8404-13d9831397d1" />
 
-- 임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강
+- **임베딩 벡터 + 부스팅으로 비선형 조합 패턴 포착, class_weight 불균형 보강**
+
+<br />
 
 ### 4-3. Transformer (Keras)
 
 <img width="800" alt="Transformer 모델 구조" src="https://github.com/user-attachments/assets/2b919587-b7f8-4e8b-9ae7-9d217a61939c" />
 
-- 소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습
-- 모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.
+- **소규모 도메인 어휘(125개)로 직접 구축, 시퀀스 순서·문맥 상호작용 학습**
+- **모든 모델에서 오버피팅이 발생해서 오버피팅을 방지하는 방향으로 파라미터를 튜닝했다.**
+
+<br />
 
 ### 4-4. Soft Voting 앙상블
 
 - 3개 모델의 predict_proba 균등 평균(1/3)
 - 모델별 특징이 다르기 때문에 상호보완을 위해 사용했다.
-  - fastText: 서브워드 기반 키워드 패턴
-  - LightGBM: 임베딩 벡터의 비선형 조합
-  - Transformer: 시퀀스 순서·문맥 상호작용
+  - `fastText`: 서브워드 기반 키워드 패턴
+  - `LightGBM`: 임베딩 벡터의 비선형 조합
+  - `Transformer`: 시퀀스 순서·문맥 상호작용
 
 ---
 
@@ -140,9 +146,9 @@
 # 6. 배운점
 
 - **전처리가 곧 성능이다**: 86개 매핑 규칙을 수작업으로 만든 것이 핵심이었다. NLP에서 도메인 특화 전처리가 모델 아키텍처 선택보다 더 큰 영향을 미칠 수 있다는 걸 체감했다.
-- **미학습 도메인 일반화**: Train에 없는 제조사 B/C가 Test의 93%를 차지하는 극단적인 도메인 시프트 상황에서, 제조사 고유 표현을 공통 토큰으로 매핑하는 접근이 효과적이었다. 도메인 지식 기반의 정규화가 모델의 일반화 능력을 결정했다.
+- **미학습 도메인 일반화**: Train에 없는 제조사 B/C가 Test의 93%를 차지하는 극단적인 도메인 시프트 상황에서 제조사 고유 표현을 공통 토큰으로 매핑하는 접근이 효과적이었다. 도메인 지식 기반의 정규화가 모델의 일반화 능력을 결정했다.
 - **앙상블의 상호보완성**: fastText(서브워드), LightGBM(벡터 조합), Transformer(문맥)가 각각 다른 관점에서 분류했기 때문에 단순 평균 앙상블로도 개별 모델 대비 안정적인 성능을 얻었다.
-- **자동화 가능성의 발견**: 수작업 매핑의 한계를 느꼈고, 매핑 규칙 자체를 자동 생성하는 classifier를 만들면 새로운 제조사가 추가되어도 대응할 수 있다는 연구 방향을 도출했다. → [alarm-rag-agent](../alarm-rag-agent)
+- **자동화 가능성의 발견**: 수작업 매핑의 한계를 느꼈고 매핑 규칙 자체를 자동 생성하는 classifier를 만들면 새로운 제조사가 추가되어도 대응할 수 있다는 연구 방향을 도출했다. → [alarm-rag-agent](../alarm-rag-agent)
 
 ---
 
@@ -171,4 +177,6 @@
 | sva | 경보 심각도 | 미사용 |
 | site | 경보 발생 지역 (익명화) | 미사용 |
 | sysname | 장치 이름 (익명화) | 미사용 (제조사마다 상이) |
-| unit, slot, port | 장치 �
+| unit, slot, port | 장치 내 위치 정보 | 미사용 (결측 多, 제조사마다 상이) |
+
+</details>
