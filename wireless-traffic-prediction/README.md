@@ -77,6 +77,7 @@
 
 ---
 
+
 # 3. 피처 엔지니어링
 
 ### 3-1. Lag 변수 생성
@@ -92,6 +93,7 @@
 <img width="650" alt="시간대별 uenomax 평균" src="https://github.com/user-attachments/assets/332732b2-0625-4a11-be53-e37f7323dc4b" />
 
 - 시간대별 uenomax 평균 차이가 뚜렷하다. (2.38~4.75) → 시간대 변수를 추가했다.
+
 
 ### 3-3. 다중공선성 완화
 
