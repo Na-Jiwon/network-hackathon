@@ -71,8 +71,9 @@
 
 - 스파이크 발생 기지국 A 제거 → 데이터 분산 **48% 감소** (std 3.05 → 1.58)
 - 최종 선택: C, D, I, H / 제외: A, E, F, G
+- 
+<img width="1000" alt="station_selection_table" src="https://github.com/user-attachments/assets/055193bb-fb47-4039-b3ea-9e140fe22628" />
 
-<img width="950" alt="기지국 선별 결과" src="station_selection_table.png" />
 
 ---
 
@@ -94,7 +95,7 @@
 
 ### 3-3. 다중공선성 완화
 
-<img width="600" alt="VIF 상위 피처" src="vif_table.png" />
+<img width="700" alt="vif_table" src="https://github.com/user-attachments/assets/11a1d1d9-924b-4221-819f-a850fe5fda5b" />
 
 - 성공과 시도 피처 간 상관계수가 0.99 이상이다. 
 → 시도 피처만 선택  시도에는 성공 데이터가 포함되기 때문이다.
