@@ -63,7 +63,7 @@ FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LL
 | **Agent** | ReAct(LangGraph) 구조로 검색 결과가 불충분하면 재검색 도구를 동적으로 추가 호출 — 단순 RAG와 달리 상황에 따라 검색 전략을 스스로 조정 |
 | **Generation** | 유사 사례를 컨텍스트로 받은 LLM이 장애 유형 판단 + 근거 설명 생성 |
 
-<img width="788" height="828" alt="rag" src="https://github.com/user-attachments/assets/af620ecc-46f0-4f0e-b3b1-dd3633b3a472" />
+<img width="600" alt="rag" src="https://github.com/user-attachments/assets/af620ecc-46f0-4f0e-b3b1-dd3633b3a472" />
 
 ---
 
