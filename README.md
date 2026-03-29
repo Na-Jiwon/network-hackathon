@@ -4,7 +4,7 @@
 
 | 분야 | 과제 | 순위 |
 |------|------|------|
-| 분야1 | 무선 기지국 인구 밀집도 예측 | 59팀 중 **6위** |
+| 분야1 | 무선 기지국 트래픽 예측 | 59팀 중 **6위** |
 | 분야2 | 유선 네트워크 경보 유형 분류 | 59팀 중 **3위** |
 
 🔗 [대회 페이지](https://aifactory.space/task/2513/overview)
@@ -14,7 +14,7 @@
 ## 프로젝트 구성
 
 ### 📡 [[해커톤/ML] ETRI·KT AI 해커톤 최우수상 — 무선트래픽 예측 (시계열)](https://github.com/Na-Jiwon/network-hackathon/tree/main/wireless-traffic-prediction)
-무선 기지국 RU 통계 데이터를 기반으로 축제 지역 인구 수를 예측하는 회귀 모델
+무선 기지국 RU 통계 데이터를 기반으로 단말 접속 수(uenomax)를 예측하는 회귀 모델
 
 - **데이터**: 업/다운링크, BLER, RSSI, 단말 수 등 5분 단위 RU 통계
 - **모델**: LightGBM, XGBoost
@@ -34,7 +34,7 @@
 
 - 기존 방식의 수동 딕셔너리 86개 규칙 → 규칙 없이 자동 분류
 - **모델**: LLaMA 3.1 8B (Groq) + FAISS 벡터DB + LangGraph ReAct Agent
-- **성능**: FAISS 단독 0.948 / RAG Agent 0.867 (단건 경보 기준)
+- **성능**:FAISS 단독 0.58(500개 샘플) / Agent 0.83(100개 샘플)
 - 새 제조사 추가 시 재학습 없이 자동 대응
 
 ---
