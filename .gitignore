@@ -20,6 +20,8 @@ fault-alarm-classification/모델 설명서/
 # alarm-rag-agent 제외 대상
 ########################
 alarm-rag-agent/data/
+alarm-rag-agent/faiss_index/
+alarm-rag-agent/faiss_eval_index/
 fault-alarm-classification/data/
 
 
@@ -36,5 +38,22 @@ fault-alarm-classification/data/
 *.h5
 *.joblib
 __pycache__/
+*.pyc
 .env
+.env.*
+!.env.example
 faiss_index/
+faiss_eval_index/
+
+########################
+# Claude / Cowork / IDE 메타데이터
+########################
+.claude/
+.claude/**
+CLAUDE.md
+.aider*
+.cursor/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
