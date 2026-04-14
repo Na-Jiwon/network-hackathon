@@ -99,6 +99,19 @@ FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LL
 
 FAISS 단독과 해커톤 원본의 차이는 입력 단위가 다르기 때문. FAISS는 단건 경보 입력, 해커톤 원본은 ticketno 단위 시퀀스 입력.
 
+### 운영 지표
+
+`evaluate_faiss.py` 는 정확도와 함께 단건 분류 **p50/p95 latency**, **Groq 토큰 사용량**, **1000건당 예상 비용**을 같이 출력한다. 실제 수치는 실행 환경·레이트리밋에 따라 달라지므로 각자 돌려 확인할 것 (샘플 값: FAISS 단독은 CPU 기준 p50 수십 ms / 비용 \$0, LLM 경로는 Groq latency에 의해 p95가 지배된다).
+
+---
+
+## 실험 및 Ablation
+
+설계 선택의 근거는 별도 문서로 정리되어 있다.
+
+- [`experiments/README.md`](experiments/README.md) — 임베딩 모델(MiniLM vs mpnet), 프롬프트 한/영 구성, threshold 0.8/1.0/1.2 분포, 아키텍처 선택 이유를 표로 정리
+- [`experiments/hybrid_bm25_faiss.py`](experiments/hybrid_bm25_faiss.py) — BM25 + FAISS 를 **Reciprocal Rank Fusion**으로 결합. 영문 토큰이 많은 본 도메인에서 sparse 매칭이 dense 검색을 보완하는지 직접 비교할 수 있는 실험 스크립트 (`pip install rank_bm25` 필요)
+
 ---
 
 ## 기술 스택
@@ -123,10 +136,13 @@ FAISS 단독과 해커톤 원본의 차이는 입력 단위가 다르기 때문.
 
 ```
 alarm-rag-agent/
-├── agent.py          # 벡터DB 로드, ReAct Agent 구성 (도구 2개)
-├── app.py            # Streamlit UI
-├── evaluate_faiss.py # FAISS 단독 / RAG / Agent 성능 비교 평가
-└── explore_data.py   # 유사도 분포 분석 및 threshold 설정 근거
+├── agent.py                       # 벡터DB 로드, ReAct Agent 구성 (도구 2개)
+├── app.py                         # Streamlit UI
+├── evaluate_faiss.py              # 4방식 정확도 + p50/p95 latency + Groq 비용 측정
+├── explore_data.py                # 유사도 분포 분석 및 threshold 설정 근거
+└── experiments/
+    ├── README.md                  # 임베딩/프롬프트/threshold ablation 표
+    └── hybrid_bm25_faiss.py       # BM25 + FAISS RRF 하이브리드 검색 실험
 ```
 
 ---
