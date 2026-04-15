@@ -1,7 +1,6 @@
-# 실험 Ablation 정리
+# 실험 근거 정리
 
-본 문서는 `alarm-rag-agent` 설계 과정에서 수행한 실험들을 **선택의 근거**로 정리한 기록이다.
-"왜 이 구성을 최종으로 골랐는가"에 대한 방어 자료.
+본 문서는 `alarm-rag-agent` 설계 과정에서 수행한 실험들을 **선택의 근거**로 정리한 기록
 
 ---
 
@@ -129,5 +128,4 @@ python experiments/hybrid_bm25_faiss.py
 python experiments/compare_prompt_lang.py 100
 ```
 
-실험 수치는 돌릴 때마다 약간 변한다 (sample `random_state=42` 고정, LLM은 온도·레이트리밋 영향).
-위 표의 숫자는 방어 가능한 **범위**로 해석할 것.
+실험 수치는 돌릴 때마다 약간 변한다 (sample `random_state=42` 고정, LLM은 온도·레이트리밋 영향)
