@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain_core.messages import ToolMessage
-from agent import load_vectorstore, load_agent, classify_alarm
+
+from agent import build_graph, classify_alarm, load_vectorstore
 
 
 def get_confidence(score):
@@ -39,16 +40,16 @@ def get_vectorstore():
 
 
 @st.cache_resource
-def get_agent(_vectorstore):
-    return load_agent(_vectorstore)
+def get_graph(_vectorstore):
+    return build_graph(_vectorstore)
 
 
 st.title("🔔 통신 경보 장애 분류 Agent")
 st.write("경보 메시지를 입력하면 AI가 장애 유형을 자동으로 분류합니다.")
 
 with st.spinner("AI 준비 중..."):
-    vectorstore = load_vectorstore()
-    agent = load_agent(vectorstore)
+    vectorstore = get_vectorstore()
+    graph = get_graph(vectorstore)
 
 alarm_input = st.text_input(
     "경보 메시지 입력",
@@ -58,8 +59,8 @@ alarm_input = st.text_input(
 if st.button("분류하기"):
     if alarm_input:
         with st.spinner("분석 중..."):
-            result = classify_alarm(vectorstore, alarm_input, agent)
-            answer = result["answer"]
+            result = classify_alarm(graph, alarm_input)
+            answer = result["answer"] or "Unknown"
             method = result["method"]
 
         st.success("분류 완료!")
@@ -88,7 +89,7 @@ if st.button("분류하기"):
 
         elif method == "FAISS fallback":
             # Agent 실패, FAISS 다수결 fallback
-            refs = result.get("references", [])
+            refs = result.get("references") or []
             if refs:
                 best_score = refs[0][1]
                 confidence_label, confidence_type = get_confidence(best_score)
@@ -124,7 +125,7 @@ if st.button("분류하기"):
 
             st.write("### 분류 근거")
             st.caption("🤖 Agent 판단 — FAISS 결과가 불확실하여 LLM이 최종 분류")
-            messages = result.get("messages", [])
+            messages = result.get("messages") or []
             tool_results = extract_tool_results(messages)
 
             if tool_results:

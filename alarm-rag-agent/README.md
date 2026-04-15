@@ -2,13 +2,13 @@
 
 ## 소개
 
-ETRI·KT 통신망 안정화 AI 해커톤(전체 `158팀` 참가)에서 수행한 경보 분류 과제를 LLM + RAG로 개선한 프로젝트
+ETRI·KT 통신망 안정화 AI 해커톤에서 수행한 경보 분류 과제를 LLM + RAG로 개선한 프로젝트
 
 해커톤 당시 제조사별 경보 표현 차이 문제를 **수동 딕셔너리 86개 규칙**으로 해결했으나 새 제조사가 추가될 때마다 규칙을 수작업으로 추가해야 하는 한계가 있었음. 이를 **규칙 없이 LLM + RAG로 자동 분류**하는 방식으로 개선.
 
 → [fault-alarm-classification](../fault-alarm-classification)(해커톤 분야2 `3위` / 59팀)의 수작업 한계를 AI 자동화로 대체한 확장 프로젝트
 
-FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LLM 분류 및 근거 생성으로 이어지는 RAG 파이프라인을 직접 설계·구현했다.
+FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LLM 분류 및 근거 생성으로 이어지는 RAG 파이프라인을 직접 설계,구현
 
 ---
 
@@ -49,19 +49,40 @@ FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LL
 
 ## 시스템 구조
 
+LangGraph `StateGraph`로 3-branch 분류 파이프라인을 구성한다. 각 노드는 state에
+중간 근거(`references`, `messages`)를 누적해 API와 Streamlit UI가 동일한 state를
+바탕으로 분기별 근거를 그대로 렌더링할 수 있다.
+
 ```
-새 경보 입력
-→ [Retrieval] search_similar_alarms: FAISS에서 유사 경보 검색 (threshold 0.8)
-→ [Agent]    결과 부족 시 refine_search로 재검색 여부를 LLM이 스스로 판단 (threshold 1.2)
-→ [Generation] LLM이 유사 사례 참고해 장애 유형 분류 + 이유 설명 생성
-→ Streamlit UI로 결과 출력
+            ┌──────────────────┐
+  입력 ───▶ │ fast_path_faiss  │  FAISS k=3, threshold 0.8
+            └────────┬─────────┘
+                     │ route_by_confidence
+          unanimous ─┤├─ unclear
+                     ▼
+   ┌──────────────────────┐   ┌──────────────────┐
+   │ finalize_unanimous   │   │  agent_refine     │  ReAct + refine_search
+   └──────────┬───────────┘   └─────────┬────────┘
+              │                         │ route_after_agent
+              │               done ─────┤├───── fallback
+              │                         ▼                ▼
+              │                         │        ┌───────────────┐
+              │                         │        │ fallback_vote │  FAISS k=3, threshold 1.2
+              │                         │        └───────┬───────┘
+              ▼                         ▼                ▼
+            END ◀──────────────────── END  ◀──────── END
 ```
 
-| 단계 | 역할 |
-|------|------|
-| **Retrieval** | FAISS 벡터DB에서 입력 경보와 가장 유사한 학습 경보를 검색, threshold로 신뢰도 필터링 |
-| **Agent** | ReAct(LangGraph) 구조로 검색 결과가 불충분하면 재검색 도구를 동적으로 추가 호출 — 단순 RAG와 달리 상황에 따라 검색 전략을 스스로 조정 |
-| **Generation** | 유사 사례를 컨텍스트로 받은 LLM이 장애 유형 판단 + 근거 설명 생성 |
+| 경로 | 조건 | 비용 |
+|------|------|------|
+| **FAISS 만장일치** | k=3 검색 결과 라벨이 전부 같고 거리 < 0.8 | LLM 호출 0 |
+| **Agent 판단** | 라벨 혼재 또는 threshold 초과 | ReAct LLM 1~2회 |
+| **FAISS fallback** | Agent 예외/재귀 한계 초과 | LLM 호출 0, threshold 1.2 다수결 |
+
+서빙은 FastAPI `/classify` 엔드포인트(`api.py`)로 노출되며 Streamlit UI와 동일한
+`build_graph`를 공유한다. 매 요청마다 `{alarm, method, latency_ms, cached, tool_calls}`
+JSON 로그 한 줄을 stdout에 남기고, 동일 경보 반복 입력은 in-memory 캐시로 LLM 호출
+없이 응답한다. `/health`·`/stats` 엔드포인트로 헬스체크와 운영 지표를 함께 제공.
 
 <img width="600" alt="rag" src="https://github.com/user-attachments/assets/af620ecc-46f0-4f0e-b3b1-dd3633b3a472" />
 
@@ -111,6 +132,7 @@ FAISS 단독과 해커톤 원본의 차이는 입력 단위가 다르기 때문.
 
 - [`experiments/README.md`](experiments/README.md) — 임베딩 모델(MiniLM vs mpnet), 프롬프트 한/영 구성, threshold 0.8/1.0/1.2 분포, 아키텍처 선택 이유를 표로 정리
 - [`experiments/hybrid_bm25_faiss.py`](experiments/hybrid_bm25_faiss.py) — BM25 + FAISS 를 **Reciprocal Rank Fusion**으로 결합. 영문 토큰이 많은 본 도메인에서 sparse 매칭이 dense 검색을 보완하는지 직접 비교할 수 있는 실험 스크립트 (`pip install rank_bm25` 필요)
+- [`experiments/compare_prompt_lang.py`](experiments/compare_prompt_lang.py) — 동일 ReAct 구조에서 시스템 프롬프트 언어만 한/영으로 바꿔 tool-calling 안정성과 최종 정확도를 비교하는 재현 스크립트
 
 ---
 
@@ -136,13 +158,18 @@ FAISS 단독과 해커톤 원본의 차이는 입력 단위가 다르기 때문.
 
 ```
 alarm-rag-agent/
-├── agent.py                       # 벡터DB 로드, ReAct Agent 구성 (도구 2개)
-├── app.py                         # Streamlit UI
+├── agent.py                       # 벡터DB 로드 + ReAct Agent + LangGraph StateGraph
+├── api.py                         # FastAPI `/classify` 엔드포인트 + 구조화 JSON 로깅 + 캐시
+├── app.py                         # Streamlit UI (동일 build_graph 공유)
+├── requirements.txt               # 의존성 명세
 ├── evaluate_faiss.py              # 4방식 정확도 + p50/p95 latency + Groq 비용 측정
 ├── explore_data.py                # 유사도 분포 분석 및 threshold 설정 근거
+├── tests/
+│   └── test_classify.py           # 3-branch 분기 pytest 커버리지
 └── experiments/
     ├── README.md                  # 임베딩/프롬프트/threshold ablation 표
-    └── hybrid_bm25_faiss.py       # BM25 + FAISS RRF 하이브리드 검색 실험
+    ├── hybrid_bm25_faiss.py       # BM25 + FAISS RRF 하이브리드 검색 실험
+    └── compare_prompt_lang.py     # 시스템 프롬프트 한/영 tool-calling 안정성 비교
 ```
 
 ---
@@ -160,5 +187,17 @@ alarm-rag-agent/
 
 ```bash
 pip install -r requirements.txt
+
+# 1) FastAPI 서버 (백엔드 API — 실서비스 연동 기준점)
+uvicorn api:app --reload --port 8000
+#    Swagger UI : http://localhost:8000/docs
+#    Health     : GET  /health
+#    분류       : POST /classify  {"alarm_message": "BATTERY_FAIL"}
+#    지표       : GET  /stats
+
+# 2) Streamlit UI (동일 build_graph 를 공유하는 데모)
 streamlit run app.py
+
+# 3) 테스트
+pytest tests/ -v
 ```

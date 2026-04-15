@@ -124,6 +124,9 @@ python evaluate_faiss.py 100    # LLM 샘플 100개
 
 # BM25 + FAISS 하이브리드 실험
 python experiments/hybrid_bm25_faiss.py
+
+# 프롬프트 언어(한/영) tool-calling 안정성 비교
+python experiments/compare_prompt_lang.py 100
 ```
 
 실험 수치는 돌릴 때마다 약간 변한다 (sample `random_state=42` 고정, LLM은 온도·레이트리밋 영향).

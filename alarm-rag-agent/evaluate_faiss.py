@@ -10,7 +10,7 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 import os
 from collections import Counter
-from agent import load_agent, classify_alarm
+from agent import build_graph, classify_alarm, load_agent
 
 load_dotenv()
 
@@ -235,7 +235,8 @@ print(classification_report(y_true_llm, y_pred_agent, zero_division=0))
 
 
 # === 하이브리드 평가 ===
-print(f"\n=== 하이브리드 평가 (FAISS 만장일치 + Agent fallback, {LLM_SAMPLE_SIZE}개) ===")
+print(f"\n=== 하이브리드 평가 (LangGraph StateGraph, {LLM_SAMPLE_SIZE}개) ===")
+graph = build_graph(vectorstore, agent=agent)
 y_pred_hybrid = []
 faiss_count = 0
 agent_count = 0
@@ -246,7 +247,7 @@ for i, (_, row) in enumerate(llm_sample.iterrows()):
     t0 = time.perf_counter()
     try:
         result = invoke_with_retry(
-            lambda r=row: classify_alarm(vectorstore, r['alarmmsg_original'], agent)
+            lambda r=row: classify_alarm(graph, r['alarmmsg_original'])
         )
         pred = extract_label(result["answer"])
         if result["method"] == "FAISS 만장일치":
