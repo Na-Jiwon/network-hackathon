@@ -34,7 +34,12 @@ load_dotenv()
 # ---------- 벡터스토어 ----------
 
 def load_vectorstore():
-    """기존 인덱스 로드, 없으면 Q2_train.csv로 생성."""
+    """기존 인덱스 로드, 없으면 학습 CSV로 생성.
+
+    실 데이터(`data/Q2_train.csv`)가 없을 때는 구조 확인용 더미 샘플
+    (`data/sample_Q2_train.csv`)로 fallback한다. 외부 리뷰어가 실 데이터
+    없이도 파이프라인이 끝까지 도는지 바로 확인할 수 있도록 하기 위함.
+    """
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-mpnet-base-v2"
     )
@@ -42,7 +47,10 @@ def load_vectorstore():
         return FAISS.load_local(
             "faiss_index", embeddings, allow_dangerous_deserialization=True
         )
-    df = pd.read_csv("data/Q2_train.csv")
+    csv_path = "data/Q2_train.csv"
+    if not os.path.exists(csv_path):
+        csv_path = "data/sample_Q2_train.csv"
+    df = pd.read_csv(csv_path)
     df_unique = df[["alarmmsg_original", "root_cause_type"]].drop_duplicates()
     docs = df_unique["alarmmsg_original"].tolist()
     labels = df_unique["root_cause_type"].tolist()
@@ -235,18 +243,36 @@ def build_graph(vectorstore, agent=None):
 
 # ---------- 공개 분류 API ----------
 
+VALID_LABELS = ("LinkCut", "PowerFail", "UnitFail")
+
+
+def normalize_label(text) -> str:
+    """LLM 원문이든 메타데이터 라벨이든 세 라벨 중 하나 또는 'Unknown'으로 정규화.
+
+    Agent 경로에서 LLM이 "The answer is LinkCut" 같이 답하는 경우가 있어
+    API/UI에서 그대로 노출하지 않도록 단일 지점에서 정규화한다.
+    """
+    if not text:
+        return "Unknown"
+    text = str(text)
+    for label in VALID_LABELS:
+        if label in text:
+            return label
+    return "Unknown"
+
+
 def classify_alarm(graph, alarm_message: str) -> dict:
     """그래프 한 번 실행해 단건 경보를 분류한다.
 
     반환 키:
-        answer       : 'LinkCut' / 'PowerFail' / 'UnitFail' / 'Unknown' (또는 LLM 원문)
+        answer       : 'LinkCut' / 'PowerFail' / 'UnitFail' / 'Unknown' 중 하나 (정규화됨)
         method       : 'FAISS 만장일치' | 'Agent 판단' | 'FAISS fallback'
         references   : [(Document, distance), ...]  (FAISS 경로에서)
         messages     : ReAct Agent 실행 메시지들  (Agent 경로에서)
     """
     result = graph.invoke({"alarm_message": alarm_message})
     return {
-        "answer": result.get("answer"),
+        "answer": normalize_label(result.get("answer")),
         "method": result.get("method"),
         "references": result.get("references"),
         "messages": result.get("messages"),

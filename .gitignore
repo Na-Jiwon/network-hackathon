@@ -12,6 +12,7 @@ fault-alarm-classification/모델 설명서/
 alarm-rag-agent/data/
 alarm-rag-agent/faiss_index/
 alarm-rag-agent/faiss_eval_index/
+!alarm-rag-agent/data/sample_Q2_train.csv
 
 # === 공통 아티팩트·보안 ===
 __pycache__/

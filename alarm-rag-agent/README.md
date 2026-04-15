@@ -43,7 +43,7 @@ FAISS 기반 유사 경보 검색 → ReAct Agent의 동적 도구 호출 → LL
 - 출처: ETRI·KT 통신망 안정화 AI 해커톤
 - Train: `9,322개` 경보 (제조사 A)
 - Test: `37,671개` 경보 (제조사 A/B/C)
-- 데이터는 보안상 제외
+- 실제 데이터는 보안상 제외. 대신 구조 확인용 더미 샘플(`data/sample_Q2_train.csv`, 20행)을 포함해 실 데이터 없이도 파이프라인을 끝까지 돌려볼 수 있다.
 
 ---
 
@@ -164,7 +164,7 @@ alarm-rag-agent/
 ├── tests/
 │   └── test_classify.py           # 3-branch 분기 pytest 커버리지
 └── experiments/
-    ├── README.md                  # 임베딩/프롬프트/threshold ablation 표
+    ├── README.md                  # 임베딩/프롬프트/threshold 비교 실험 표
     └── compare_prompt_lang.py     # 시스템 프롬프트 한/영 tool-calling 안정성 비교
 ```
 
@@ -192,8 +192,4 @@ uvicorn api:app --reload --port 8000
 #    지표       : GET  /stats
 
 # 2) Streamlit UI (동일 build_graph 를 공유하는 데모)
-streamlit run app.py
-
-# 3) 테스트
-pytest tests/ -v
-```
+streamlit run app.
