@@ -234,61 +234,15 @@ print(
 print(classification_report(y_true_llm, y_pred_agent, zero_division=0))
 
 
-# === 하이브리드 평가 ===
-print(f"\n=== 하이브리드 평가 (LangGraph StateGraph, {LLM_SAMPLE_SIZE}개) ===")
-graph = build_graph(vectorstore, agent=agent)
-y_pred_hybrid = []
-faiss_count = 0
-agent_count = 0
-hybrid_latencies = []
-hybrid_in_tokens, hybrid_out_tokens = 0, 0
-
-for i, (_, row) in enumerate(llm_sample.iterrows()):
-    t0 = time.perf_counter()
-    try:
-        result = invoke_with_retry(
-            lambda r=row: classify_alarm(graph, r['alarmmsg_original'])
-        )
-        pred = extract_label(result["answer"])
-        if result["method"] == "FAISS 만장일치":
-            faiss_count += 1
-        else:
-            agent_count += 1
-            # Agent 경로만 토큰 집계 (FAISS 경로는 LLM 호출 없음)
-            in_tok, out_tok = usage_from_agent_messages(result.get("messages", []))
-            hybrid_in_tokens += in_tok
-            hybrid_out_tokens += out_tok
-    except Exception as e:
-        print(f"  {i+1} 오류: {e}")
-        pred = "Unknown"
-    hybrid_latencies.append((time.perf_counter() - t0) * 1000)
-    y_pred_hybrid.append(pred)
-    print(f"  {i+1}/{LLM_SAMPLE_SIZE} 완료")
-
-print(f"Accuracy: {accuracy_score(y_true_llm, y_pred_hybrid):.4f}")
-print(f"FAISS 만장일치: {faiss_count}건 / Agent 판단: {agent_count}건")
-print(
-    f"Latency (단건 분류): p50 {percentile(hybrid_latencies, 50):.1f}ms / "
-    f"p95 {percentile(hybrid_latencies, 95):.1f}ms"
-)
-hybrid_cost_1k = estimate_cost(hybrid_in_tokens, hybrid_out_tokens, LLM_SAMPLE_SIZE)
-print(
-    f"Groq 토큰: in {hybrid_in_tokens} / out {hybrid_out_tokens} "
-    f"(1000건당 예상 비용 ${hybrid_cost_1k:.4f}, FAISS 경로는 LLM 호출 없음)"
-)
-print(classification_report(y_true_llm, y_pred_hybrid, zero_division=0))
-
 
 # === 최종 비교 ===
 print(f"\n=== 최종 비교 ===")
 print(f"FAISS 단독:  {accuracy_score(y_true, y_pred_faiss):.4f} (단건 경보 {len(faiss_sample)}개 샘플)")
 print(f"RAG (LLM):   {accuracy_score(y_true_llm, y_pred_rag):.4f} (단건 경보 {LLM_SAMPLE_SIZE}개 샘플)")
 print(f"Agent:       {accuracy_score(y_true_llm, y_pred_agent):.4f} (단건 경보 {LLM_SAMPLE_SIZE}개 샘플)")
-print(f"하이브리드:   {accuracy_score(y_true_llm, y_pred_hybrid):.4f} (단건 경보 {LLM_SAMPLE_SIZE}개 / FAISS {faiss_count}건 + Agent {agent_count}건)")
 
 print(f"\n=== 운영 지표 요약 ===")
 print(f"{'방식':<12} {'p50(ms)':>10} {'p95(ms)':>10} {'1000건 비용($)':>18}")
 print(f"{'FAISS 단독':<12} {percentile(faiss_latencies, 50):>10.1f} {percentile(faiss_latencies, 95):>10.1f} {0.0:>18.4f}")
 print(f"{'RAG (LLM)':<12} {percentile(rag_latencies, 50):>10.1f} {percentile(rag_latencies, 95):>10.1f} {rag_cost_1k:>18.4f}")
 print(f"{'Agent':<12} {percentile(agent_latencies, 50):>10.1f} {percentile(agent_latencies, 95):>10.1f} {agent_cost_1k:>18.4f}")
-print(f"{'하이브리드':<12} {percentile(hybrid_latencies, 50):>10.1f} {percentile(hybrid_latencies, 95):>10.1f} {hybrid_cost_1k:>18.4f}")
